@@ -19,11 +19,11 @@ const Landing = () => {
                 router.push("/dashboard");
               }}
             >
-              {" "}
-              Get Started{" "}
+              
+              Get Started
             </button>
             <button className=" basis-1/2 outline outline-blue-500 hover:bg-blue-700 text-white text-xl font-bold py-4 px-6 rounded ml-6">
-              <Link href="#info">Learn more</Link>{" "}
+              <Link href="#info">Learn more</Link>
             </button>
           </div>
         </div>
@@ -35,18 +35,17 @@ const Landing = () => {
     </div>
     <div className="container m-16" id="info">
       <div className="text-4xl text-white text-center">
-        {" "}
         Why you should use Elpis
       </div>
       <div className="text-xl text-center p-4">
         <p className="p-2">
-          {" "}
+
           Elpis will provide many benefits for everyone using Elpis for their
           Social Activities.
         </p>
         <p className="p-1">
-          {" "}
-          Here are some important benefits provided by Elpis{" "}
+
+          Here are some important benefits provided by Elpis
         </p>
       </div>
       <div className="flex flex-row">
@@ -88,7 +87,6 @@ const Landing = () => {
     <div className="container">
       <div className="bg-gradient-to-r from-cyan-500 to-blue-500  text-center">
         <p className="text-4xl p-8">
-          {" "}
           Join us and Let's change the world with Elpis !!
         </p>
         <button
