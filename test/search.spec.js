@@ -62,7 +62,23 @@ describe("Get profile",()=>{
                  user.profileImageUrl,
                  user.coverImageUrl
                );
-               let trans = await elpis.searchProfile(user.handle);
+               let user2 = {
+                 name: "user2",
+                 handle: "user2",
+                 bio: "bio of user2",
+                 profileImageUrl: "imageUrl",
+                 coverImageUrl: "imageUrl",
+               };
+               await elpis
+                 .connect(otherAccount)
+                 .createProfile(
+                   user2.name,
+                   user2.handle,
+                   user2.bio,
+                   user2.profileImageUrl,
+                   user2.coverImageUrl
+                 );
+               let trans = await elpis.connect(otherAccount).searchProfile(user.handle);
                expect(trans.handle).to.equal(user.handle); 
             })
         })
