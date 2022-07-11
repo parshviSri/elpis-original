@@ -2,16 +2,29 @@ import { useRouter } from "next/router";
 
 const Card = (props) => {
   console.log(props);
-  const user = {
-    name: props.profile.name,
-    handle: props.profile.handle,
-    bio: props.profile.bio,
-    followers: props.profile.follwerCount,
-    following: props.profile.followingCount,
-    publications: props.profile.postCount,
-    profileImageUrl: props.profile.profileImageUrl,
-    coverImageUrl: props.profile.coverImageUrl,
+  let user = {
+    name:"",
+    handle:"",
+    bio:"",
+    followers:"",
+    following:"",
+    publications:"",
+    profileImageUrl:"",
+    coverImageUrl:"",
   };
+  if(props.profile){
+    user = {
+      name: props?.profile?.name,
+      handle: props.profile.handle,
+      bio: props.profile.bio,
+      followers: props.profile.follwerCount,
+      following: props.profile.followingCount,
+      publications: props.profile.postCount,
+      profileImageUrl: props.profile.profileImageUrl,
+      coverImageUrl: props.profile.coverImageUrl,
+    };
+  }
+  
   const router = useRouter();
   return (
     <div
