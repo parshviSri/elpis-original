@@ -4,7 +4,7 @@ import Header  from './components/header';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getAccount, connectContract } from "../ether-utils";
-import { profileInterface } from "./interface/profile";
+import { profileInterface } from "../interface/profile";
 const Dashboard =() =>{
     const router = useRouter();
 
