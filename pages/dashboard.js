@@ -19,9 +19,12 @@ const Dashboard =() =>{
            const address = await getAccount();
            const elpis = await connectContract();
            console.log(id);
-           const profile = await elpis.searchProfile(id);
-           setUserProfile(profile);
-            router.push({ pathname: "/dashboard", query: { id: id } });
+           if(id){
+              const profile = await elpis.searchProfile(id);
+              setUserProfile(profile);
+              router.push({ pathname: "/dashboard", query: { id: id } });
+           }
+         
 
         }
         catch(err){
