@@ -54,7 +54,7 @@ const Landing = () => {
             <img src="/money.png" className="mx-auto" />
             <div className="font-bold text-xl mb-2">Earn Tokens When Post</div>
             <p className="text-gray-700 text-base">
-              We believe it is owner who should own and benefit from their
+              We believe it is the creator who should own and benefit from their
               content not the platform. So everytime your post go viral you will
               earn tokens!!
             </p>
