@@ -54,7 +54,7 @@ const Landing = () => {
             <img src="/money.png" className="mx-auto" />
             <div className="font-bold text-xl mb-2">Earn Tokens When Post</div>
             <p className="text-gray-700 text-base">
-              We believe it's owner who should own and benefit from their
+              We believe it is owner who should own and benefit from their
               content not the platform. So everytime your post go viral you will
               earn tokens!!
             </p>
@@ -68,7 +68,7 @@ const Landing = () => {
             </div>
             <p className="text-gray-700 text-base">
               We use decentralised file system to store your posts which is
-              cryptographically hashed so it's secure and totally decentralised
+              cryptographically hashed so it is secure and totally decentralised
             </p>
           </div>
         </div>
@@ -87,7 +87,7 @@ const Landing = () => {
     <div className="container">
       <div className="bg-gradient-to-r from-cyan-500 to-blue-500  text-center">
         <p className="text-4xl p-8">
-          Join us and Let's change the world with Elpis !!
+          Join us and Lets change the world with Elpis !!
         </p>
         <button
           className="bg-white text-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded m-8"
