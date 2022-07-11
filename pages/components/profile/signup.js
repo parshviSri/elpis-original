@@ -149,6 +149,7 @@ const SignUp = () => {
                   className="inline-block align-baseline font-bold text-m text-blue-500 hover:text-blue-800"
                   href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   Need a wallet?
                 </a>
