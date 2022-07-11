@@ -40,7 +40,7 @@ const Followers =(props)=>{
       <div>
         Followers
         {followers.length == 0 && (
-          <div> You don't have any follower yet !!</div>
+          <div>Do not have any follower yet !!</div>
         )}
         {followers.length > 0 &&
           followers.map((follower) => {

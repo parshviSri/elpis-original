@@ -37,7 +37,7 @@ const Followings = (props) => {
   return (
     <div>
       Followings
-      {followings.length == 0 && <div> You don't follow anybody yet !!</div>}
+      {followings.length == 0 && <div> Donot follow anybody yet !!</div>}
       {followings.length > 0 && 
         followings.map((following) => (
           <Card key={following.handle} profile={following} />
