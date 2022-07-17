@@ -13,13 +13,11 @@ const Followers =(props)=>{
         await getAccount();
         const elpis = await connectContract();
         const follwerMetaData = await axios.get(props.handle);
-        console.log(follwerMetaData.data.followers.length);
         let _followers=[]
         for (let i = 0; i < follwerMetaData.data.followers.length; i++) {
           let _follower = await elpis.searchProfile(
             follwerMetaData.data.followers[i]
           );
-          console.log(_follower);
           let dummyFollower = {
             name: _follower.name,
             handle: _follower.handle,
@@ -44,7 +42,6 @@ const Followers =(props)=>{
         )}
         {followers.length > 0 &&
           followers.map((follower) => {
-            console.log(follower);
           return(<Card key={follower.handle} profile={follower}/>)
           }
           )}
