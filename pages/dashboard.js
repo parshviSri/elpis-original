@@ -18,7 +18,6 @@ const Dashboard =() =>{
         try{
            const address = await getAccount();
            const elpis = await connectContract();
-           console.log(id);
            if(id){
               const profile = await elpis.searchProfile(id);
               setUserProfile(profile);
@@ -36,7 +35,7 @@ const Dashboard =() =>{
     return(
         <div>
             <Header/>
-            {id || <SignUp/>}
+            {!id && <SignUp/>}
             {id && <Profile profile={userProfile}/>}
         </div>
     )
