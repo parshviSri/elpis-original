@@ -22,7 +22,6 @@ const SignUp = () => {
 
   const addCoverImage = async(e) => {
     let coverImage = await addFile(e.target.files[0]);
-    console.log(coverImage);
     setUserReg({ ...userReg, coverImageUrl: coverImage });
   };
 
@@ -39,11 +38,9 @@ const SignUp = () => {
       );
       await trans.wait();
       const event = await elpis.on("ProfileCreated",(_profilehandle, _address)=>{
-        console.log("_profilehandle, _address", _profilehandle, _address);
       router.push({ pathname: "/dashboard", query: { id: userReg.handle } });
       });
     } catch (err) {
-      console.log(err);
     }
   };
 
