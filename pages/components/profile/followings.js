@@ -13,13 +13,11 @@ const Followings = (props) => {
     await getAccount();
     const elpis = await connectContract();
     const follwerMetaData = await axios.get(props.handle);
-    console.log(follwerMetaData.data.followers.length);
     let _followers = [];
     for (let i = 0; i < follwerMetaData.data.followers.length; i++) {
       let _follower = await elpis.searchProfile(
         follwerMetaData.data.followers[i]
       );
-      console.log(_follower);
       let dummyFollower = {
         name: _follower.name,
         handle: _follower.handle,
