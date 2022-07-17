@@ -24,7 +24,8 @@ contract Elpis {
     uint256 noOfUser;
     event ProfileCreated(string handle, address indexed user);
     event StartedFollowing(string follwerhandle, string followinghandle);
-
+    event PostCreated( string handle, uint256 postCount);
+    event PostInteraction(string posthandle);
     function isHandleExist(string memory _handle)
         public
         view
@@ -89,5 +90,22 @@ contract Elpis {
         profileAddress[msg.sender].followingMetaData = _followingMetaData;
         profileAddress[msg.sender].followingCount += 1;
         emit StartedFollowing(profileAddress[msg.sender].handle, _handle);
+    }
+
+    function getTotalUser() external view returns (uint256) {
+        return noOfUser;
+    }
+    function addPost(string memory _postMetaData) external{
+        profileAddress[msg.sender].postMetaData=_postMetaData;
+        profileAddress[msg.sender].postCount+=1;        
+        emit PostCreated(profileAddress[msg.sender].handle,profileAddress[msg.sender].postCount);
+
+    }
+    function addCommentAndLikes(string memory _postProfileHandle, string memory _postMetadata)external{
+        address  postProfileAddress = profileHandle[_postProfileHandle];
+        profileAddress[postProfileAddress].postMetaData = _postMetadata;
+        emit PostInteraction(_postProfileHandle);
+
+
     }
 }
