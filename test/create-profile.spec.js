@@ -74,6 +74,23 @@ describe("Create Profile", () => {
         )
       ).to.emit(elpis, "ProfileCreated").withArgs(user.handle,owner.address);
     })
+    it("Should increase the total no of users", async()=>{
+       let user = {
+         name: "user1",
+         handle: "user1",
+         bio: "bio of user1",
+         profileImageUrl: "imageUrl",
+         coverImageUrl: "imageUrl",
+       };
+       await elpis.createProfile(
+         user.name,
+         user.handle,
+         user.bio,
+         user.profileImageUrl,
+         user.coverImageUrl
+       );
+       expect(await elpis.getTotalUser()).to.equal(1);
+    })
   })
 });
 
