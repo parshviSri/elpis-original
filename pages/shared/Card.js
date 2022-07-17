@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 
 const Card = (props) => {
-  console.log(props);
   let user = {
     name:"",
     handle:"",
