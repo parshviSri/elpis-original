@@ -3,7 +3,7 @@ import { connectContract } from "../../ether-utils";
 import { addFile } from "../../ipfs-utils";
 import { useRouter } from "next/router";
 const PostCard = (porps) =>{
-    console.log(porps.post.comments);
+    console.log(porps.post?.comments);
     const router = useRouter();
     const{id} = router.query;
     const [showComment,setShowComment] = useState(false);
@@ -46,9 +46,9 @@ const PostCard = (porps) =>{
           profileImage: commenterProfile.profileImageUrl,
           handleName: commenterProfile.handle,
         });
-        let newPost= porps.post;
+        let newPost= porps?.post;
         console.log(comment);
-        newPost.comments.push(comment);
+        newPost?.comments?.push(comment);
         let url = await addFile(JSON.stringify(newPost));
         console.log(url);
         let elpis = await connectContract();
@@ -74,13 +74,13 @@ const PostCard = (porps) =>{
             </div>
           </div>
           <div className="px-6 py-2">
-            <p className="text-white text-base">{porps.post.description}</p>
+            <p className="text-white text-base">{porps?.post?.description}</p>
           </div>
           <div className="flex flex-wrap justify-center">
-            {porps.post.image && (
+            {porps?.post?.image && (
               <img
                 className="w-64 h-64 flex justify-center"
-                src={porps.post.image}
+                src={porps?.post?.image}
                 alt="post Image"
               />
             )}
@@ -198,17 +198,17 @@ const PostCard = (porps) =>{
           </div>
           <div>
             {showComment &&
-              porps.post.comments.map((comment) => {
-                return (<div className=" flex py-2">
+              porps?.post?.comments?.map((comment,i) => {
+                return (<div key={i}className=" flex py-2">
                   <img
-                    src={comment.profileImage || "/noImage.png"}
+                    src={comment?.profileImage || "/noImage.png"}
                     alt="..."
                     className="shadow rounded-full max-w-16 h-16 align-middle border-none"
                   />
                   <div className="px-3">
-                    <p>{comment.commentername}</p>
+                    <p>{comment?.commentername}</p>
                     <p className="text-gray-500">{comment.handle}</p>
-                    <p>{comment.description}</p>
+                    <p>{comment?.description}</p>
                   </div>
                 </div>);
               })}
