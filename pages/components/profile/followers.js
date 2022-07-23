@@ -5,14 +5,14 @@ import Card from '../../shared/Card';
 const Followers =(props)=>{
     const[followers, setFollowers] = useState([]);
     useEffect(()=>{
-        if (props.handle) {
+        if (props.metaData) {
           getFollower();
         }
     },[])
     const getFollower =async() =>{
         await getAccount();
         const elpis = await connectContract();
-        const follwerMetaData = await axios.get(props.handle);
+        const follwerMetaData = await axios.get(props.metaData);
         let _followers=[]
         for (let i = 0; i < follwerMetaData.data.followers.length; i++) {
           let _follower = await elpis.searchProfile(
@@ -42,8 +42,11 @@ const Followers =(props)=>{
         )}
         {followers.length > 0 &&
           followers.map((follower) => {
-          return(<Card key={follower.handle} profile={follower}/>)
-          }
+          return (
+            
+              <Card key={follower.handle} profile={follower} />
+            
+          )}
           )}
       </div>
     );
