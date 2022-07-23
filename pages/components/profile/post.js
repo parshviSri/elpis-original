@@ -5,7 +5,7 @@ import axios from 'axios';
 import PostCard from "../../shared/PostCard";
 
 const Post= (props) =>{
-    console.log(props.handle);
+    console.log(props.profile);
     const[showAdd, setShowAdd]= useState(false);
     const[newpost,setPost] = useState({
         description:'',
@@ -14,8 +14,8 @@ const Post= (props) =>{
     });
     const[oldPosts,setOldPosts]= useState([]);
     useEffect(()=>{
-        if(props.handle){
-            showPost();
+        if (props.metaData) {
+          showPost();
         }
     },[])
     const addPost = async() =>{
@@ -32,13 +32,11 @@ const Post= (props) =>{
             comments:[],
             date:today
         }
-        if(props.handle){
-            posts= await axios.get(props.handle);
-            posts.push(post);
-
-        }
-        else{
-            posts=[post]
+        if (props.metaData) {
+          posts = await axios.get(props.metaData);
+          posts.push(post);
+        } else {
+          posts = [post];
         }
         let upadatedPostMetaData=await addFile(JSON.stringify(posts));
         await elpis.addPost(upadatedPostMetaData);
@@ -54,7 +52,7 @@ const Post= (props) =>{
         setPost({...newpost,image:postImage,imageFlag:true});
     };
     const showPost= async()=>{        
-            let posts=await axios.get(props.handle);
+            let posts = await axios.get(props.metaData);
             console.log(posts);
             setOldPosts( [posts.data]);
         
@@ -142,7 +140,7 @@ const Post= (props) =>{
         {oldPosts.length > 0 &&
           oldPosts.map((oldpost,i) => {
             return (
-              <PostCard key={i} post={oldpost}/>
+              <PostCard key={i} post={oldpost} index={i}/>
             );
           })}
       </div>

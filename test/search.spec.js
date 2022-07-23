@@ -25,13 +25,15 @@ describe("Get profile",()=>{
               bio: "bio of user1",
               profileImageUrl: "imageUrl",
               coverImageUrl: "imageUrl",
+              tokenUri:"tokenUri"
             };
             await elpis.createProfile(
               user.name,
               user.handle,
               user.bio,
               user.profileImageUrl,
-              user.coverImageUrl
+              user.coverImageUrl,
+              user.tokenUri
             );
         let trans = await elpis.getProfile();
          expect(trans.handle).to.equal(user.handle);
@@ -54,13 +56,15 @@ describe("Get profile",()=>{
                  bio: "bio of user1",
                  profileImageUrl: "imageUrl",
                  coverImageUrl: "imageUrl",
+                 tokenUri: "tokenUri",
                };
                await elpis.createProfile(
                  user.name,
                  user.handle,
                  user.bio,
                  user.profileImageUrl,
-                 user.coverImageUrl
+                 user.coverImageUrl,
+                 user.tokenUri
                );
                let user2 = {
                  name: "user2",
@@ -68,6 +72,7 @@ describe("Get profile",()=>{
                  bio: "bio of user2",
                  profileImageUrl: "imageUrl",
                  coverImageUrl: "imageUrl",
+                 tokenUri: "tokenUri",
                };
                await elpis
                  .connect(otherAccount)
@@ -76,7 +81,8 @@ describe("Get profile",()=>{
                    user2.handle,
                    user2.bio,
                    user2.profileImageUrl,
-                   user2.coverImageUrl
+                   user2.coverImageUrl,
+                   user2.tokenUri
                  );
                let trans = await elpis.connect(otherAccount).searchProfile(user.handle);
                expect(trans.handle).to.equal(user.handle); 

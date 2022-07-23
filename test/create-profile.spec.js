@@ -17,15 +17,17 @@ describe("Create Profile", () => {
         handle: "user1",
         bio: "bio of user1",
         profileImageUrl: "imageUrl",
-        coverImageUrl: "imageUrl"
+        coverImageUrl: "imageUrl",
+        tokenUri: "tokenUri",
       };
-       await elpis.createProfile(user.name,user.handle,user.bio,user.profileImageUrl,user.coverImageUrl);
+       await elpis.createProfile(user.name,user.handle,user.bio,user.profileImageUrl,user.coverImageUrl,user.tokenUri);
       let user2 = {
         name: "user1",
         handle: "user1",
         bio: "bio of user1",
         profileImageUrl: "imageUrl",
-        coverImageUrl: "imageUrl"
+        coverImageUrl: "imageUrl",
+        tokenUri: "tokenUri",
       };
        await expect(
          elpis.createProfile(
@@ -33,7 +35,8 @@ describe("Create Profile", () => {
            user2.handle,
            user2.bio,
            user2.profileImageUrl,
-           user2.coverImageUrl
+           user2.coverImageUrl,
+           user2.tokenUri
          )
        ).to.be.revertedWith("Profile  exists!!");
     });
@@ -44,13 +47,15 @@ describe("Create Profile", () => {
         bio: "bio of user1",
         profileImageUrl: "imageUrl",
         coverImageUrl: "imageUrl",
+        tokenUri: "tokenUri",
       };
       const trans = await elpis.createProfile(
         user.name,
         user.handle,
         user.bio,
         user.profileImageUrl,
-        user.coverImageUrl
+        user.coverImageUrl,
+        user.tokenUri
       );
        expect(await elpis.isHandleExist(user.handle)).to.equal(true);
     })
@@ -63,6 +68,7 @@ describe("Create Profile", () => {
         bio: "bio of user1",
         profileImageUrl: "imageUrl",
         coverImageUrl: "imageUrl",
+        tokenUri: "tokenUri",
       };
       await expect(
         elpis.createProfile(
@@ -70,7 +76,8 @@ describe("Create Profile", () => {
           user.handle,
           user.bio,
           user.profileImageUrl,
-          user.coverImageUrl
+          user.coverImageUrl,
+          user.tokenUri
         )
       ).to.emit(elpis, "ProfileCreated").withArgs(user.handle,owner.address);
     })
@@ -81,13 +88,15 @@ describe("Create Profile", () => {
          bio: "bio of user1",
          profileImageUrl: "imageUrl",
          coverImageUrl: "imageUrl",
+         tokenUri:"tokenUri"
        };
        await elpis.createProfile(
          user.name,
          user.handle,
          user.bio,
          user.profileImageUrl,
-         user.coverImageUrl
+         user.coverImageUrl,
+         user.tokenUri
        );
        expect(await elpis.getTotalUser()).to.equal(1);
     })

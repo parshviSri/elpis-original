@@ -5,6 +5,7 @@ import Followings from "./followings";
 import { getAccount, connectContract } from "../../../ether-utils";
 import { useRouter } from "next/router";
 import { addFile } from "../../../ipfs-utils";
+import { storeNFT } from "../../../nftStorage";
 
 import axios from "axios";
 const Profile = (props) => {
@@ -22,6 +23,7 @@ const Profile = (props) => {
   if(props.profile){
    userProfile = props.profile;
    console.log(userProfile);
+
   }
   useEffect(()=>{},[props])
   const followerCount = parseInt(userProfile.followerCount._hex);
@@ -48,14 +50,47 @@ const Profile = (props) => {
   const followProfile = async () => {
     let elpis = await connectContract();
     let _currentuser = await currentUser();
+    //current user is follower
+    let followertokenUri="";
     let updatefollowerMetaData = "";
+
+    //the user profile is current profile page following
+    let followingtokenUri="";
     let updatefollowingsMetaData = "";
+    let followingPic = new File([await axios.get(userProfile.profileImageUrl)],"userprofile.png");
+        let followerprofilePic = new File(
+          [await axios.get(_currentuser.profileImageUrl)],
+          "currentUserprofile.png"
+        );
     if (userProfile.followerMetaData) {
       let followerMetaData = await axios.get(userProfile.followerMetaData);
-
+      console.log(followerMetaData);
       followerMetaData.data.followers.push(_currentuser.handle);
       followerMetaData.data.followersCount = +1;
       updatefollowerMetaData = await addFile(JSON.stringify(followerMetaData.data));
+      followertokenUri = await storeNFT(
+        followingPic,
+        userProfile.name,
+        userProfile.bio,
+        [
+          {
+            trait_type: "handle",
+            value: userProfile.handle,
+          },
+          {
+            trait_type: "followers",
+            value: followerMetaData.data.followersCount,
+          },
+          {
+            trait_type: "followings",
+            value: parseInt(userProfile.followingCount._hex),
+          },
+          {
+            trait_type: "post",
+            value: parseInt(userProfile.postCount._hex),
+          },
+        ]
+      );
     } else {
       let followerMetaData = JSON.stringify({
         handle: userProfile.handle,
@@ -65,13 +100,64 @@ const Profile = (props) => {
         followersCount: 1,
       });
       updatefollowerMetaData = await addFile(followerMetaData);
+      followertokenUri = followertokenUri = await storeNFT(
+        followingPic,
+        userProfile.name,
+        userProfile.bio,
+        [
+          {
+            trait_type: "handle",
+            value: userProfile.handle,
+          },
+          {
+            trait_type: "followers",
+            value: 1,
+          },
+          {
+            trait_type: "followings",
+            value: parseInt(userProfile.followingCount._hex),
+          },
+          {
+            trait_type: "post",
+            value: parseInt(userProfile.postCount._hex),
+          },
+        ]
+      );
     }
+  console.log("followertokenUri",followertokenUri);
+
     if (_currentuser.followingsMetaData) {
       let followingsMetaData = await axios.get(_currentuser.followerMetaData);
+      console.log(followingsMetaData);
       followingsMetaData.data.followings.push(userProfile.handle);
       followingsMetaData.data.followings += 1;
+      
       updatefollowingsMetaData = await addFile(JSON.stringify(followingsMetaData.data));
+      followingtokenUri = followertokenUri = await storeNFT(
+        followerprofilePic,
+        _currentuser.name,
+        _currentuser.bio,
+        [
+          {
+            trait_type: "handle",
+            value: _currentuser.handle,
+          },
+          {
+            trait_type: "followers",
+            value: parseInt(_currentuser.followerCount._hex),
+          },
+          {
+            trait_type: "followings",
+            value: followingsMetaData.data.followings,
+          },
+          {
+            trait_type: "post",
+            value: parseInt(_currentuser.postCount._hex),
+          },
+        ]
+      );
     } else {
+      
       let followingsMetaData = JSON.stringify({
         handle: _currentuser.handle,
 
@@ -80,13 +166,38 @@ const Profile = (props) => {
         followersCount: 1,
       });
       updatefollowingsMetaData = await addFile(followingsMetaData);
+      followingtokenUri = followertokenUri = await storeNFT(
+        followerprofilePic,
+        _currentuser.name,
+        _currentuser.bio,
+        [
+          {
+            trait_type: "handle",
+            value: _currentuser.handle,
+          },
+          {
+            trait_type: "followers",
+            value: parseInt(_currentuser.followerCount._hex),
+          },
+          {
+            trait_type: "followings",
+            value: 1,
+          },
+          {
+            trait_type: "post",
+            value: parseInt(_currentuser.postCount._hex),
+          },
+        ]
+      );
     }
-
-    
+    console.log(followingtokenUri, "followingtokenUri");
     let trans = await elpis.followProfile(
       id,
       updatefollowerMetaData,
-      updatefollowingsMetaData
+      updatefollowingsMetaData,
+      followingtokenUri.url,
+      followertokenUri.url,
+      
     );
     await trans.wait();
     const event = await elpis.on(

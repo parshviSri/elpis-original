@@ -18,15 +18,17 @@ describe("Post",()=>{
            bio: "bio of user1",
            profileImageUrl: "imageUrl",
            coverImageUrl: "imageUrl",
+           tokenUri:"tokenUri"
          };
          await elpis.createProfile(
            user.name,
            user.handle,
            user.bio,
            user.profileImageUrl,
-           user.coverImageUrl
+           user.coverImageUrl,
+           user.tokenUri
          );
-         await expect(elpis.addPost("postMetaData"))
+         await expect(elpis.addPost("postMetaData","tokenUri"))
            .to.emit(elpis, "PostCreated")
            .withArgs(user.handle, 1);
        });
@@ -39,15 +41,17 @@ describe("Post",()=>{
             bio: "bio of user1",
             profileImageUrl: "imageUrl",
             coverImageUrl: "imageUrl",
+            tokenUri: "tokenUri",
           };
           await elpis.createProfile(
             user.name,
             user.handle,
             user.bio,
             user.profileImageUrl,
-            user.coverImageUrl
+            user.coverImageUrl,
+            user.tokenUri
           );
-          await elpis.addPost("postMetaData");
+          await elpis.addPost("postMetaData","tokenUri");
           let profile = await elpis.getProfile();
           expect(profile.postCount).to.equal(1);
         })
@@ -60,15 +64,17 @@ describe("Post",()=>{
           bio: "bio of user1",
           profileImageUrl: "imageUrl",
           coverImageUrl: "imageUrl",
+          tokenUri: "tokenUri",
         };
         await elpis.createProfile(
           user.name,
           user.handle,
           user.bio,
           user.profileImageUrl,
-          user.coverImageUrl
+          user.coverImageUrl,
+          user.tokenUri
         );
-        await elpis.addPost("postMetaData");
+        await elpis.addPost("postMetaData","tokenUri");
         await expect(
           elpis
             .connect(otherAccount)

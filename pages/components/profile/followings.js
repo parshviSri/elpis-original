@@ -5,18 +5,19 @@ import Card from "../../shared/Card";
 const Followings = (props) => {
   const [followings, setFollowings] = useState([]);
   useEffect(() => {
-    if (props.handle) {
+    if (props.metaData) {
       getFollowings();
     }
   }, []);
   const getFollowings = async () => {
     await getAccount();
     const elpis = await connectContract();
-    const follwerMetaData = await axios.get(props.handle);
+    const follwingMetaData = await axios.get(props.metaData);
+    console.log(follwingMetaData);
     let _followers = [];
-    for (let i = 0; i < follwerMetaData.data.followers.length; i++) {
+    for (let i = 0; i < follwingMetaData.data.followings.length; i++) {
       let _follower = await elpis.searchProfile(
-        follwerMetaData.data.followers[i]
+        follwingMetaData.data.followings[i]
       );
       let dummyFollower = {
         name: _follower.name,

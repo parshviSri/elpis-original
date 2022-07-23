@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
 import { addFile } from "../../../ipfs-utils";
 import { useState } from "react";
-import { getAccount, connectContract } from "../../../ether-utils";
+import { connectContract } from "../../../ether-utils";
+import {addTokenUri,addNFTStorage} from '../../../tokenUri-utils';
+import{storeNFT} from '../../../nftStorage';
 const SignUp = () => {
   const router = useRouter();
-
   const [userReg, setUserReg] = useState({
     name: "",
     handle: "",
@@ -12,9 +13,10 @@ const SignUp = () => {
     profileImageUrl: "/noImage.png",
     coverImageUrl: "/DefaultBackground.png",
   });
-
+  const[profileImg,setprofileImg] = useState(null);
 
   const addProfileImage = async(e) => {
+    setprofileImg(e.target.files[0]);
     let profileImage = await addFile(e.target.files[0]);
     setUserReg({ ...userReg, profileImageUrl: profileImage });
   };
@@ -27,14 +29,23 @@ const SignUp = () => {
 
   const createProfile = async () => {
     try {
-      const address= await getAccount();
+      let nftStorage = await storeNFT(profileImg, userReg.name, userReg.bio, [
+        userReg.handle,
+        0,
+        0,
+        0,
+      ]);
+      console.log(nftStorage.url);
+      let tokenUri = await addTokenUri(userReg.name,userReg.bio,userReg.profileImageUrl,userReg.handle,0,0,0);
+      console.log(tokenUri);
       const elpis = await connectContract();
       let trans = await elpis.createProfile(
         userReg.name,
         userReg.handle,
         userReg.bio,
         userReg.profileImageUrl,
-        userReg.coverImageUrl
+        userReg.coverImageUrl,
+        nftStorage.url
       );
       await trans.wait();
       const event = await elpis.on("ProfileCreated",(_profilehandle, _address)=>{
