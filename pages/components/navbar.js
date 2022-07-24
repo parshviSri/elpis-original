@@ -1,6 +1,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 const NavBar = () =>{
     const router = useRouter();
     return (
@@ -44,6 +45,7 @@ const NavBar = () =>{
             </div>
             <div className="basis-1/6">
               <div className="absolute top-0 right-1">
+                <ConnectButton />
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                   onClick={() => {

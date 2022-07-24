@@ -5,9 +5,9 @@ import Followings from "../components/profile/followings";
 const Tab = (props) => {
 
   let profilePage = props.profile;
-  const profilePagefollower = parseInt(profilePage.followerCount._hex);
-  const profilePagefollowing = parseInt(profilePage.followingCount._hex);
-  const profilePagepost = parseInt(profilePage.postCount._hex);
+  const profilePagefollower = parseInt(profilePage?.followerCount._hex);
+  const profilePagefollowing = parseInt(profilePage?.followingCount._hex);
+  const profilePagepost = parseInt(profilePage?.postCount._hex);
   const [tab, setTab] = useState({
     id: "post",
     activeClass:
@@ -58,20 +58,20 @@ const Tab = (props) => {
       <div id="myTabContent">
         {tab.id == "post" && (
           <Post
-            profile={profilePage.name}
-            metaData={profilePage.postMetaData}
+            profile={profilePage?.name}
+            metaData={profilePage?.postMetaData}
           />
         )}
         {tab.id == "followers" && (
           <Followers
-            profile={profilePage.name}
-            metaData={profilePage.followerMetaData}
+            profile={profilePage?.name}
+            metaData={profilePage?.followerMetaData}
           />
         )}
         {tab.id == "followings" && (
           <Followings
-            profile={profilePage.name}
-            metaData={profilePage.followingMetaData}
+            profile={profilePage?.name}
+            metaData={profilePage?.followingMetaData}
           />
         )}
       </div>

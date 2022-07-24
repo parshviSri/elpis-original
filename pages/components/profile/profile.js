@@ -1,221 +1,25 @@
-import { useEffect, useState } from "react";
-import Post from "./post";
-import Followers from "./followers";
-import Followings from "./followings";
-import { getAccount, connectContract } from "../../../ether-utils";
+import {connectContract } from "../../../ether-utils";
 import { useRouter } from "next/router";
-import { addFile } from "../../../ipfs-utils";
-import { storeNFT } from "../../../nftStorage";
-
-import axios from "axios";
+import {useState } from "react";
+import Tab from "../../shared/Tab";
+import FollowButton from "../../shared/FollowButton";
 const Profile = (props) => {
-  const router = useRouter();
-
-  const { id } = router.query;
-  let userProfile = {
-    name: "",
-    bio: "",
-    handle: "",
-    followerCount: 0,
-    followingCount: 0,
-    postCount:0
-  };
-  if(props.profile){
-   userProfile = props.profile;
-   console.log(userProfile);
-
-  }
-  useEffect(()=>{},[props])
-  const followerCount = parseInt(userProfile.followerCount._hex);
-  const followingCount = parseInt(userProfile.followingCount._hex);
-  const postCount = parseInt(userProfile.postCount._hex);
-  const [tab, setTab] = useState({
-    id: "post",
-    activeClass:
-      "inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300",
-  });
-  const [showFollow, setShowFollow] = useState(true);
-  const [search, setSearch] = useState("");
-  const currentUser = async () => {
-    let account = await getAccount();
+    const router = useRouter();
+    let profilePage= props.profile;
+  console.log(props.profile);
+    
+    const [searchId, setSearchId] = useState("");
+      const search = async () => {
     let elpis = await connectContract();
-    let _currentuser = await elpis.getProfile();
-    if (_currentuser.handle == id) {
-      setShowFollow(false);
-    } else {
-      setShowFollow(true);
-    }
-    return _currentuser;
-  };
-  const followProfile = async () => {
-    let elpis = await connectContract();
-    let _currentuser = await currentUser();
-    //current user is follower
-    let followertokenUri="";
-    let updatefollowerMetaData = "";
-
-    //the user profile is current profile page following
-    let followingtokenUri="";
-    let updatefollowingsMetaData = "";
-    let followingPic = new File([await axios.get(userProfile.profileImageUrl)],"userprofile.png");
-        let followerprofilePic = new File(
-          [await axios.get(_currentuser.profileImageUrl)],
-          "currentUserprofile.png"
-        );
-    if (userProfile.followerMetaData) {
-      let followerMetaData = await axios.get(userProfile.followerMetaData);
-      console.log(followerMetaData);
-      followerMetaData.data.followers.push(_currentuser.handle);
-      followerMetaData.data.followersCount = +1;
-      updatefollowerMetaData = await addFile(JSON.stringify(followerMetaData.data));
-      followertokenUri = await storeNFT(
-        followingPic,
-        userProfile.name,
-        userProfile.bio,
-        [
-          {
-            trait_type: "handle",
-            value: userProfile.handle,
-          },
-          {
-            trait_type: "followers",
-            value: followerMetaData.data.followersCount,
-          },
-          {
-            trait_type: "followings",
-            value: parseInt(userProfile.followingCount._hex),
-          },
-          {
-            trait_type: "post",
-            value: parseInt(userProfile.postCount._hex),
-          },
-        ]
-      );
-    } else {
-      let followerMetaData = JSON.stringify({
-        handle: userProfile.handle,
-
-        followers: [_currentuser.handle],
-
-        followersCount: 1,
-      });
-      updatefollowerMetaData = await addFile(followerMetaData);
-      followertokenUri = followertokenUri = await storeNFT(
-        followingPic,
-        userProfile.name,
-        userProfile.bio,
-        [
-          {
-            trait_type: "handle",
-            value: userProfile.handle,
-          },
-          {
-            trait_type: "followers",
-            value: 1,
-          },
-          {
-            trait_type: "followings",
-            value: parseInt(userProfile.followingCount._hex),
-          },
-          {
-            trait_type: "post",
-            value: parseInt(userProfile.postCount._hex),
-          },
-        ]
-      );
-    }
-  console.log("followertokenUri",followertokenUri);
-
-    if (_currentuser.followingsMetaData) {
-      let followingsMetaData = await axios.get(_currentuser.followerMetaData);
-      console.log(followingsMetaData);
-      followingsMetaData.data.followings.push(userProfile.handle);
-      followingsMetaData.data.followings += 1;
-      
-      updatefollowingsMetaData = await addFile(JSON.stringify(followingsMetaData.data));
-      followingtokenUri = followertokenUri = await storeNFT(
-        followerprofilePic,
-        _currentuser.name,
-        _currentuser.bio,
-        [
-          {
-            trait_type: "handle",
-            value: _currentuser.handle,
-          },
-          {
-            trait_type: "followers",
-            value: parseInt(_currentuser.followerCount._hex),
-          },
-          {
-            trait_type: "followings",
-            value: followingsMetaData.data.followings,
-          },
-          {
-            trait_type: "post",
-            value: parseInt(_currentuser.postCount._hex),
-          },
-        ]
-      );
-    } else {
-      
-      let followingsMetaData = JSON.stringify({
-        handle: _currentuser.handle,
-
-        followers: [userProfile.handle],
-
-        followersCount: 1,
-      });
-      updatefollowingsMetaData = await addFile(followingsMetaData);
-      followingtokenUri = followertokenUri = await storeNFT(
-        followerprofilePic,
-        _currentuser.name,
-        _currentuser.bio,
-        [
-          {
-            trait_type: "handle",
-            value: _currentuser.handle,
-          },
-          {
-            trait_type: "followers",
-            value: parseInt(_currentuser.followerCount._hex),
-          },
-          {
-            trait_type: "followings",
-            value: 1,
-          },
-          {
-            trait_type: "post",
-            value: parseInt(_currentuser.postCount._hex),
-          },
-        ]
-      );
-    }
-    console.log(followingtokenUri, "followingtokenUri");
-    let trans = await elpis.followProfile(
-      id,
-      updatefollowerMetaData,
-      updatefollowingsMetaData,
-      followingtokenUri.url,
-      followertokenUri.url,
-      
-    );
-    await trans.wait();
-    const event = await elpis.on(
-      "StartedFollowing",
-      (follwerhandle, follwinghandle) => {
-        setShowFollow(false);
-      }
-    );
-  };
-  const searchProfile = async () => {
-    currentUser();
-    let account = await getAccount();
-    let elpis = await connectContract();
-    let trans = await elpis.searchProfile(search);
+    let trans = await elpis.searchProfile(searchId);
     router.push({ pathname: "/dashboard", query: { id: trans.handle } });
+
+
   };
+
   return (
-    <div className="w-full h-full">
+    <div>
+      {/* search bar */}
       <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">
         Search
       </label>
@@ -236,103 +40,44 @@ const Profile = (props) => {
           placeholder="Search other profiles"
           required
           onChange={(e) => {
-            setSearch(e.target.value);
+            setSearchId(e.target.value);
           }}
         />
         <button
           className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          onClick={searchProfile}
+          onClick={search}
         >
           Search
         </button>
       </div>
-      <img
-        className="object-fill h-48 w-full"
-        src={userProfile.coverImageUrl || "/DefaultBackground.png"}
-        alt="Cover Image"
-      />
-      <div className=" flex w-3/12 sm:w-4/12 px-4">
+      {/* profile basic info */}
+      <div>
         <img
-          src={userProfile.profileImageUrl || "/noImage.png"}
-          alt="..."
-          className="shadow rounded-full max-w-48 h-28 align-middle border-none"
+          className="object-fill h-48 w-full"
+          src={profilePage?.coverImageUrl || "/DefaultBackground.png"}
+          alt="Cover Image"
         />
-        <div>
-          <p className="text-bold text-4xl border-b">{userProfile.name}</p>
-          <p className="text-2xl px-2">{userProfile.handle}</p>
-        </div>
-        <div className="ml-8 px-2 py-4">
+        <div className=" flex w-3/12 sm:w-4/12 px-4">
+          <img
+            src={profilePage?.profileImageUrl || "/noImage.png"}
+            alt="..."
+            className="shadow rounded-full max-w-48 h-28 align-middle border-none"
+          />
+          <div>
+            <p className="text-bold text-4xl border-b">{profilePage?.name}</p>
+            <p className="text-2xl px-2">{profilePage?.handle}</p>
+          </div>
           {/* Follow Button will come here */}
           <div className="ml-8 px-2 py-4">
-            {showFollow && (
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                type="button"
-                onClick={followProfile}
-              >
-                Follow
-              </button>
-            )}
+            <FollowButton profile={props.profile}/>
           </div>
         </div>
+        <div className="mt-2 p-2 px-5 border-b">
+          <p>{profilePage?.bio || "Your Bio will come here a long sentences"}</p>
+        </div>
       </div>
-      <div className="mt-2 p-2 px-5 border-b">
-        <p>{userProfile.bio || "Your Bio will come here a long sentences"}</p>
-      </div>
-      <div className="mb-4 border-b border-gray-200 dark:border-gray-700">
-        <ul className="flex flex-wrap -mb-px text-sm font-medium text-center">
-          <li className="basis-1/4" role="presentation">
-            <button
-              className={tab.id == "post" && tab.activeClass}
-              onClick={() => {
-                setTab({
-                  id: "post",
-                  activeClass: "inline-block p-4 rounded-t-lg border-b-2",
-                });
-              }}
-            >
-              Post:{postCount}
-            </button>
-          </li>
-          <li className="basis-1/4" role="presentation">
-            <button
-              className={tab.id == "follower" && tab.activeClass}
-              onClick={() => {
-                setTab({
-                  id: "followers",
-                  activeClass: "inline-block p-4 rounded-t-lg border-b-2",
-                });
-              }}
-            >
-              Followers:{followerCount}
-            </button>
-          </li>
-          <li className="basis-1/4" role="presentation">
-            <button
-              className={tab.id == "following" && tab.activeClass}
-              onClick={() => {
-                setTab({
-                  id: "followings",
-                  activeClass: "inline-block p-4 rounded-t-lg border-b-2",
-                });
-              }}
-            >
-              Followings:{followingCount}
-            </button>
-          </li>
-        </ul>
-      </div>
-      <div id="myTabContent">
-        {tab.id == "post" && <Post handle={userProfile.postMetaData} />}
-        {tab.id == "followers" && (
-          <Followers handle={userProfile.followerMetaData} />
-        )}
-        {tab.id == "followings" && (
-          <Followings handle={userProfile.followingMetaData} />
-        )}
-      </div>
+      <Tab profile={props.profile} />
     </div>
-  );}
-  
-
+  );
+};
 export default Profile;

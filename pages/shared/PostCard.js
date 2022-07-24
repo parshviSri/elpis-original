@@ -53,9 +53,9 @@ const PostCard = (porps) =>{
     }
     return (
       <div className="max-w-sm max-h-sm">
-        {porps.post.map((p)=>{
+        {porps?.post?.map((p)=>{
           return (
-            <div className="rounded overflow-hidden shadow-lg bg-[#03132e] text-center">
+            <div className="rounded overflow-hidden shadow-lg bg-[#03132e] text-center" key={p.handle}>
               <div className=" flex py-2">
                 <img
                   src={postProfile?.profileImageUrl || "/noImage.png"}
@@ -200,7 +200,7 @@ const PostCard = (porps) =>{
               </div>
               <div>
                 {showComment &&
-                  p.comments.map((comment, i) => {
+                  p?.comments?.map((comment, i) => {
                     return (
                       <div key={i} className=" flex py-2">
                         <img

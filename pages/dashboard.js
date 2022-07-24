@@ -1,6 +1,5 @@
 import SignUp from "./components/profile/signup";
 import Profile from "./components/profile/profile";
-import ProfileD from "./components/profile/_profile";
 import Header  from './components/header';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -37,7 +36,7 @@ const Dashboard =() =>{
       <div>
         <Header />
         {!id && <SignUp />}
-        {id && <ProfileD profile={userProfile} />}
+        {id && <Profile profile={userProfile} />}
       </div>
     );
 }

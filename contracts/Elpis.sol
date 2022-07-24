@@ -107,24 +107,13 @@ contract Elpis {
     function followProfile(
         string memory _handle,
         string memory _followerMetaData,
-        string memory _followingMetaData,
-        string memory _followertokenUri,
-        string memory _followingtokenUri
+        string memory _followingMetaData
     ) external {
         profileAddress[profileHandle[_handle]]
             .followerMetaData = _followerMetaData;
         profileAddress[profileHandle[_handle]].followerCount += 1;
         profileAddress[msg.sender].followingMetaData = _followingMetaData;
         profileAddress[msg.sender].followingCount += 1;
-        nftContract.setTokenUri(
-            profileAddress[profileHandle[_handle]].tokenId,
-            _followertokenUri
-        );
-        nftContract.setTokenUri(
-            profileAddress[msg.sender].tokenId,
-            _followingtokenUri
-        );
-
         emit StartedFollowing(profileAddress[msg.sender].handle, _handle);
     }
 
@@ -132,12 +121,11 @@ contract Elpis {
         return noOfUser;
     }
 
-    function addPost(string memory _postMetaData, string memory _tokenURI)
+    function addPost(string memory _postMetaData)
         external
     {
         profileAddress[msg.sender].postMetaData = _postMetaData;
         profileAddress[msg.sender].postCount += 1;
-        nftContract.setTokenUri(profileAddress[msg.sender].tokenId, _tokenURI);
         emit PostCreated(
             profileAddress[msg.sender].handle,
             profileAddress[msg.sender].postCount
