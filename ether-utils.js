@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import Elpis from './artifacts/contracts/Elpis.sol/Elpis.json';
-const contractAddress = "0x434B750778B00683D881E5Bc5C802648D21CDD17";
+const contractAddress = "0xcAb386ea61A4e9b2234AC82960100C3152068030";
+const NFTcontractAddress = "0x1cE96211A4b61848E636bC6B157a417393CEf989";
 export const getAccount = async () => {
   await window.ethereum.request({ method: "eth_requestAccounts" });
   const accounts = await window.ethereum.request({ method: "eth_accounts" });
