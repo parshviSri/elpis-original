@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 // Import this file to use console.log
 import "hardhat/console.sol";
 import "./ElpisNFT.sol";
+import './ElpisCreator.sol';
 
-contract Elpis {
+contract Elpis is CreatorToken{
     struct Profile {
         string name;
         string handle;
@@ -39,7 +40,7 @@ contract Elpis {
     event StartedFollowing(string follwerhandle, string followinghandle);
     event PostCreated(string handle, uint256 postCount);
     event PostInteraction(string posthandle);
-
+    event AllowFollowing(bool allow);
     constructor(address _nftAddress) {
         nftContract = ElpisNFT(_nftAddress);
     }
@@ -54,6 +55,14 @@ contract Elpis {
         }
         return false;
     }
+
+    function hasCreatorToken(uint256 _tokenId)public view returns(bool){
+        if(getBalance(_tokenId)>0){
+            return true;
+        }
+        return false;
+
+    } 
 
     function createProfile(
         string memory _name,
@@ -78,6 +87,7 @@ contract Elpis {
         profileAddress[msg.sender] = _user;
         profileHandle[_handle] = msg.sender;
         noOfUser += 1;
+        mintCreatorToken(newtokenId);
         nftContract.mint(newtokenId, _tokenURI);
 
         emit ProfileCreated(_user.handle, msg.sender);
@@ -103,12 +113,29 @@ contract Elpis {
         );
         return profileAddress[profileHandle[_handle]];
     }
+    function allowFollow(string memory _handle) internal  {
 
+        require(profileAddress[msg.sender].profileExist,"You don't have profile.");
+        isHandleExist(_handle);
+        Profile memory _profile =profileAddress[profileHandle[_handle]];
+        uint256 _tokenId = _profile.tokenId ;
+         uint256  _userBalance = getBalance(_tokenId);
+        // console.log(_userBalance);
+        require(_userBalance == 0 , "You cannot follow this profile!!");
+        // transfer token 
+        getCreatorToken(_profile.tokenId,profileHandle[_handle]);
+        // emit event 
+        emit AllowFollowing(true);
+
+    }
     function followProfile(
         string memory _handle,
         string memory _followerMetaData,
         string memory _followingMetaData
     ) external {
+        allowFollow(_handle);
+        uint256 _tokenId = profileAddress[profileHandle[_handle]].tokenId;
+        require(hasCreatorToken(_tokenId),"You need Creator token");
         profileAddress[profileHandle[_handle]]
             .followerMetaData = _followerMetaData;
         profileAddress[profileHandle[_handle]].followerCount += 1;

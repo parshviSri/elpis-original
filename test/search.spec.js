@@ -4,9 +4,11 @@ const { ethers } = require("hardhat");
 describe("Get profile",()=>{
     beforeEach("#deploy", async()=>{
         [owner, otherAccount] = await ethers.getSigners();
-
+        ElpisNFT = await ethers.getContractFactory("ElpisNFT");
+        elpisNFT = await ElpisNFT.deploy();
+        await elpisNFT.deployed();
         Elpis = await ethers.getContractFactory("Elpis");
-        elpis = await Elpis.deploy();
+        elpis = await Elpis.deploy(elpisNFT.address);
         await elpis.deployed();
     });
     describe("Get profile by address",()=>{

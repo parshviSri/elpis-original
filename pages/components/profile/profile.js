@@ -1,13 +1,17 @@
 import {connectContract } from "../../../ether-utils";
 import { useRouter } from "next/router";
-import {useState } from "react";
+import {useState,useEffect } from "react";
 import Tab from "../../shared/Tab";
 import FollowButton from "../../shared/FollowButton";
+import CheckToken from './checkToken';
 const Profile = (props) => {
+  let [metaData,setMetaData]= useState();
+  useEffect(() => {
+    encrptData();
+  }, [props.profile]);
     const router = useRouter();
     let profilePage= props.profile;
-  console.log(props.profile);
-    
+    console.log(profilePage);
     const [searchId, setSearchId] = useState("");
       const search = async () => {
     let elpis = await connectContract();
@@ -16,6 +20,12 @@ const Profile = (props) => {
 
 
   };
+  const encrptData = async()=>{
+    console.log('in encrypedData');
+    let profileMetaData=await CheckToken(props.profile);
+    console.log(profileMetaData);
+    setMetaData(profileMetaData);
+  }
 
   return (
     <div>
@@ -76,7 +86,7 @@ const Profile = (props) => {
           <p>{profilePage?.bio || "Your Bio will come here a long sentences"}</p>
         </div>
       </div>
-      <Tab profile={props.profile} />
+      <Tab profile={props.profile} metadata= {metaData}/>
     </div>
   );
 };

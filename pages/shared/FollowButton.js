@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getAccount, connectContract } from "../../ether-utils";
 import { useRouter } from "next/router";
 import { addFile } from "../../ipfs-utils";
-import axios from "axios";
+import{encrypt} from '../../lit-utils';
 
 const FollowButton = (props) => {
   const router = useRouter();
@@ -33,23 +33,22 @@ const FollowButton = (props) => {
       setshowFollow(false);
     }
   };
+  
   const follow = async () => {
     let elpis = await connectContract();
 
     // the current account is the current user
-    let cuFollowing = await updateCuFollowing();
-    let cuFollowingMD = cuFollowing.metaData;
-    let cuFollowingTURI = cuFollowing.tokenUri;
+    let Following = await updateFollowing();
     // the current profile is profile Page
-    let ppFollower = await updatePpFollowers();
-    let ppFollowerMD = ppFollower.metaData;
-    let ppFollowerTURI = ppFollower.tokenUri;
-    let trans = await elpis.followProfile(
-      id,
-      ppFollowerMD,
-      cuFollowingMD
-    );
+    let Follower = await updateFollowers();
+    console.log("Follower", Follower);
+    console.log("Following", Following);
+    let follower = await addFile(JSON.stringify(Follower));
+    let following = await addFile(JSON.stringify(Following));
+    let trans = await elpis.followProfile(id, follower, following);
     await trans.wait();
+
+    
     const event = await elpis.on(
       "StartedFollowing",
       (follwerhandle, follwinghandle) => {
@@ -57,72 +56,70 @@ const FollowButton = (props) => {
       }
     );
   };
-  const updateCuFollowing = async () => {
-    let elpis = await connectContract();
-    // let tUri = await elpis.getTokenUri(parseInt(currentUser.tokenId._hex));
-    // let turiD = await axios.get(tUri);
-    // console.log(turiD);
-    let updatefollowings = { metaData: "", tokenUri: "" };
+  const updateFollowing = async () => {
+    let updatefollowings;
 
     if (currentUser.followingsMetaData) {
 
-      let followingsMetaData = await axios.get(currentUser.followerMetaData);
+      updatefollowings = currentUser.followingsMetaData;
 
-      followingsMetaData.data.followings.push(profilePage.handle);
+      updatefollowings.data.followings.push(profilePage.handle);
 
-      followingsMetaData.data.followingCount += 1;
-
-      updatefollowings.metaData = await addFile(
-        JSON.stringify(followingsMetaData.data)
-      );
-
-        // turiD.attributes[2].value = followingsMetaData.data.followingCount;
+      updatefollowings.data.followingCount += 1;
 
     } else {
-      let followingsMetaData = JSON.stringify({
+      updatefollowings = {
         handle: currentUser.handle,
 
         followings: [profilePage.handle],
 
         followingCount: 1,
-      });
-      // turiD.attributes[2].value =1;
-
-      updatefollowings.metaData = await addFile(followingsMetaData);
+      };
+          
     }
-  // updatefollowings.tokenUri = await addFile(turiD);
+    const { encryptedString, encryptedSymmetricKey } = await encrypt(
+     JSON.stringify(updatefollowings),
+     profilePage.tokenId
+   );
+   let contentJson = {
+     encryptedSymmetricKey,
+     message: await addFile(encryptedString),
+   };
 
-    return updatefollowings;
+
+    return contentJson;
   };
-  const updatePpFollowers = async () => {
-    let elpis = await connectContract();
-    // let tUri = await elpis.getTokneUri(parseInt(profilePage.tokenId._hex));
-    // let turiD = await axios.get(tUri);
-    let updatefollower ={metaData:'',tokenUri:''};
+
+
+  const updateFollowers = async () => {
+    let updatefollower;
 
     if (profilePage.followerMetaData) {
-      let followerMetaData = await axios.get(profilePage.followerMetaData);
-      console.log(followerMetaData);
-      followerMetaData.data.followers.push(currentUser.handle);
-      followerMetaData.data.followersCount = +1;
+      updatefollower = profilePage.followerMetaData;
+      console.log(updatefollower);
+      updatefollower.followers.push(currentUser.handle);
+      updatefollower.followersCount = +1;
 
-      updatefollower.metaData = await addFile(
-        JSON.stringify(followerMetaData.data)
-      );
-      // turiD.attributes[2].value = followerMetaData.data.followersCount;
 
     } else {
-      let followerMetaData = JSON.stringify({
+       updatefollower = {
         handle: profilePage.handle,
 
         followers: [currentUser.handle],
 
         followersCount: 1,
-      });
-      updatefollower.metaData = await addFile(followerMetaData);
+      };
     }
-    // updatefollower.tokenUri= await addFile(turiD)
-    return updatefollower;
+      const { encryptedString, encryptedSymmetricKey } = await encrypt(
+        JSON.stringify(updatefollower),
+        profilePage.tokenId
+      );
+      let contentJson = {
+        encryptedSymmetricKey,
+        message: await addFile(encryptedString),
+      };
+
+    return contentJson;
   };
   
   return (

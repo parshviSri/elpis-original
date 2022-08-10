@@ -2,8 +2,9 @@ import { useState , useEffect} from "react";
 import { addFile } from "../../../ipfs-utils";
 import { connectContract } from "../../../ether-utils";
 import axios from 'axios';
-import PostCard from "../../shared/PostCard";
+import { encrypt } from "../../../lit-utils";
 
+import PostCard from "../../shared/PostCard";
 const Post= (props) =>{
     console.log(props.profile);
     const[showAdd, setShowAdd]= useState(false);
@@ -14,7 +15,8 @@ const Post= (props) =>{
     });
     const[oldPosts,setOldPosts]= useState([]);
     useEffect(()=>{
-        if (props.metaData) {
+        if (props.metadata) {
+          console.log(props.metadata);
           showPost();
         }
     },[])
@@ -32,13 +34,23 @@ const Post= (props) =>{
             comments:[],
             date:today
         }
-        if (props.metaData) {
-          posts = await axios.get(props.metaData);
+        if (props.metadata) {
+          posts = props.metadata;
+          console.log(posts);
           posts.push(post);
         } else {
           posts = [post];
         }
-        let upadatedPostMetaData=await addFile(JSON.stringify(posts));
+        //encrypt your post
+        const { encryptedString, encryptedSymmetricKey } = await encrypt(
+          JSON.stringify(posts),
+          props.profile.tokenId
+        );
+        let contentJson = {
+          encryptedSymmetricKey,
+          message: await addFile(encryptedString),
+        };
+        let upadatedPostMetaData = await addFile(JSON.stringify(contentJson));
         await elpis.addPost(upadatedPostMetaData);
         let event = await elpis.on("PostCreated",(handle,postCount)=>{
             console.log("handle,postCount", handle, postCount);
@@ -52,9 +64,9 @@ const Post= (props) =>{
         setPost({...newpost,image:postImage,imageFlag:true});
     };
     const showPost= async()=>{        
-            let posts = await axios.get(props.metaData);
+            let posts = props.metadata;
             console.log(posts);
-            setOldPosts( [posts.data]);
+            setOldPosts( [posts]);
         
     }
     return (

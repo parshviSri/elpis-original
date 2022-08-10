@@ -3,11 +3,13 @@ const { ethers } = require("hardhat");
 
 describe("one profile can follow the other profile", () => {
   beforeEach("#deploy", async () => {
-    [owner, otherAccount] = await ethers.getSigners();
-
-    Elpis = await ethers.getContractFactory("Elpis");
-    elpis = await Elpis.deploy();
-    await elpis.deployed();
+   [owner, otherAccount] = await ethers.getSigners();
+   ElpisNFT = await ethers.getContractFactory("ElpisNFT");
+   elpisNFT = await ElpisNFT.deploy();
+   await elpisNFT.deployed();
+   Elpis = await ethers.getContractFactory("Elpis");
+   elpis = await Elpis.deploy(elpisNFT.address);
+   await elpis.deployed();
   });
   describe("#success", () => {
     it("should emit event FollowProfile", async () => {
@@ -50,10 +52,12 @@ describe("one profile can follow the other profile", () => {
       let _follwerTokenUri = "_follwerTokenUri";
       let _followingMetaData = "_followingMetaData";
       let _followingTokenUri = "_followingTokenUri";
+      await expect(elpis.connect(otherAccount).allowFollow(user1.handle));
+
       await expect(
         elpis
           .connect(otherAccount)
-          .followProfile(user1.handle, _followerMetaData, _followingMetaData,_follwerTokenUri,_followingTokenUri)
+          .followProfile(user1.handle, _followerMetaData, _followingMetaData)
       )
         .to.emit(elpis, "StartedFollowing")
         .withArgs(user2.handle, user1.handle);
@@ -98,14 +102,13 @@ describe("one profile can follow the other profile", () => {
         let _follwerTokenUri = "_follwerTokenUri";
         let _followingMetaData = "_followingMetaData";
         let _followingTokenUri = "_followingTokenUri";
+        await elpis.connect(otherAccount).allowFollow(user1.handle);
          await elpis
            .connect(otherAccount)
            .followProfile(
              user1.handle,
              _followerMetaData,
-             _followingMetaData,
-             _follwerTokenUri,
-             _followingTokenUri
+             _followingMetaData
            );
         let trans2 = await elpis.getProfile();
         expect(trans2.followerCount).to.equal(1);
@@ -150,14 +153,13 @@ describe("one profile can follow the other profile", () => {
       let _follwerTokenUri = "_follwerTokenUri";
       let _followingMetaData = "_followingMetaData";
       let _followingTokenUri = "_followingTokenUri";
+      await elpis.connect(otherAccount).allowFollow(user1.handle);
       await elpis
         .connect(otherAccount)
         .followProfile(
           user1.handle,
           _followerMetaData,
-          _followingMetaData,
-          _follwerTokenUri,
-          _followingTokenUri
+          _followingMetaData
         );
       let trans2 = await elpis.connect(otherAccount).getProfile();
       expect(trans2.followingCount).to.equal(1);

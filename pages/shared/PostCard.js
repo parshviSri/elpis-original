@@ -2,6 +2,7 @@ import { useState,useEffect } from "react";
 import { connectContract } from "../../ether-utils";
 import { addFile } from "../../ipfs-utils";
 import { useRouter } from "next/router";
+import { encrypt } from "../../lit-utils";
 const PostCard = (porps) =>{
   console.log(porps.post);
     const router = useRouter();
@@ -39,17 +40,26 @@ const PostCard = (porps) =>{
         setComment({ ...comment, image: commentImage, imageFlag: true });
     }
     const addComment = async(e)=>{
-        let newPost= porps.post[porps.index];
-        console.log(comment);
-        newPost.comments.push(comment);
-        porps.post[porps.index]=newPost;
-        let url = await addFile(JSON.stringify(porps.post));
-        console.log(url);
-        let elpis = await connectContract();
-       await elpis.addCommentAndLikes(postProfile.handle, url);
-       let event = await elpis.on("PostInteraction", (handle) => {
-         console.log("handle", handle);
-       });
+      let newPost = porps.post[porps.index];
+      console.log(comment);
+      newPost.comments.push(comment);
+      porps.post[porps.index] = newPost;
+      console.log(porps.post);
+      //encrypt your post comment
+      const { encryptedString, encryptedSymmetricKey } = await encrypt(
+        JSON.stringify(porps.post),
+        commenterProfile.tokenId
+      );
+      let contentJson = {
+        encryptedSymmetricKey,
+        message: await addFile(encryptedString),
+      };
+      let url = await addFile(JSON.stringify(contentJson));
+      let elpis = await connectContract();
+      await elpis.addCommentAndLikes(postProfile.handle, url);
+      let event = await elpis.on("PostInteraction", (handle) => {
+        console.log("handle", handle);
+      });
     }
     return (
       <div className="max-w-sm max-h-sm">

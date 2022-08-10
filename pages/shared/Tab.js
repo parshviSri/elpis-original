@@ -58,20 +58,20 @@ const Tab = (props) => {
       <div id="myTabContent">
         {tab.id == "post" && (
           <Post
-            profile={profilePage?.name}
-            metaData={profilePage?.postMetaData}
+            profile={profilePage}
+            metadata={props.metadata?.postMetaData}
           />
         )}
         {tab.id == "followers" && (
           <Followers
             profile={profilePage?.name}
-            metaData={profilePage?.followerMetaData}
+            metaData={props.metadata?.followerMetaData}
           />
         )}
         {tab.id == "followings" && (
           <Followings
             profile={profilePage?.name}
-            metaData={profilePage?.followingMetaData}
+            metaData={props.metadata?.followingMetaData}
           />
         )}
       </div>

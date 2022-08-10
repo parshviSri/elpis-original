@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getAccount, connectContract } from "../../../ether-utils";
 import Card from '../../shared/Card';
 const Followers =(props)=>{
+  console.log(props);
     const[followers, setFollowers] = useState([]);
     useEffect(()=>{
         if (props.metaData) {
@@ -12,11 +13,12 @@ const Followers =(props)=>{
     const getFollower =async() =>{
         await getAccount();
         const elpis = await connectContract();
-        const follwerMetaData = await axios.get(props.metaData);
+        const follwerMetaData = props.metaData;
+        console.log(follwerMetaData);
         let _followers=[]
-        for (let i = 0; i < follwerMetaData.data.followers.length; i++) {
+        for (let i = 0; i < follwerMetaData.followers.length; i++) {
           let _follower = await elpis.searchProfile(
-            follwerMetaData.data.followers[i]
+            follwerMetaData.followers[i]
           );
           let dummyFollower = {
             name: _follower.name,

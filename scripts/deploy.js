@@ -7,9 +7,12 @@
 const hre = require("hardhat");
 
 async function main() {
-
+  const ElpisNFT = await hre.ethers.getContractFactory("ElpisNFT");
+  const elpisNFT = await ElpisNFT.deploy();
+  await elpisNFT.deployed();
+  console.log("Elpis NFT is deployed at:", elpisNFT.address);
   const Elpis = await hre.ethers.getContractFactory("Elpis");
-  const elpis = await Elpis.deploy();
+  const elpis = await Elpis.deploy(elpisNFT.address);
 
   await elpis.deployed();
 
