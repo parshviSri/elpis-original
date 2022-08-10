@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import {useState,useEffect } from "react";
 import Tab from "../../shared/Tab";
 import FollowButton from "../../shared/FollowButton";
-import CheckToken from './checkToken';
+import {checkToken} from '../../../checkToken';
 const Profile = (props) => {
   let [metaData,setMetaData]= useState();
   useEffect(() => {
@@ -22,7 +22,7 @@ const Profile = (props) => {
   };
   const encrptData = async()=>{
     console.log('in encrypedData');
-    let profileMetaData=await CheckToken(props.profile);
+    let profileMetaData=await checkToken(props.profile);
     console.log(profileMetaData);
     setMetaData(profileMetaData);
   }

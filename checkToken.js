@@ -1,7 +1,7 @@
 import axios from 'axios';
-import {decrypt} from '../../../lit-utils';
+import {decrypt} from './lit-utils';
 
-const CheckToken = async(profile)=>{
+export const checkToken = async(profile)=>{
     let tokenId = parseInt(profile?.tokenId);
     const metadata={
       followerMetaData: "",
@@ -48,4 +48,3 @@ const encryptData = async(data,tokenId)=>{
     return _encryptData
 
 }
-export default CheckToken
