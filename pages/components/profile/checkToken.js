@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useState } from 'react';
 import {decrypt} from '../../../lit-utils';
 
 const CheckToken = async(profile)=>{

@@ -1,4 +1,4 @@
-import LitJsSdk from 'lit-js-sdk'
+import LitJsSdk from 'lit-js-sdk';
 
 const client = new LitJsSdk.LitNodeClient()
 const chain = 'mumbai'

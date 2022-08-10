@@ -18,6 +18,7 @@
     "ethers": "^5.6.9",
     "hardhat": "^2.10.0",
     "ipfs-http-client": "^57.0.3",
+    "lit-js-sdk": "^1.1.207",
     "mime": "^3.0.0",
     "next": "12.2.1",
     "nft.storage": "^6.4.1",
