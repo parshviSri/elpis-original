@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers } from "ethers"
 import Elpis from './artifacts/contracts/Elpis.sol/Elpis.json';
 const contractAddress = "0x9Af4eF8D4D0b6DB0894A2AAA78B4123e8DBaE089";
 const NFTcontractAddress = "0x1A42792b6eb06C4D2a0bEFDee8470Be735B26FFb";
